@@ -46,6 +46,24 @@ class StatusesControllerTest < ActionController::TestCase
     assert_redirected_to status_path(assigns(:status))
   end
 
+test "should get edit when logged in" do
+  sign_in users(:jason)
+  get :edit, id: @status
+  assert_response :success
+end
+
+test "should redirect status update when not logged in" do
+  put :update, id: @status, status: { content: @status.content }
+  assert_response :redirect
+  assert_redirected_to new_user_session_path
+end
+
+test "should update status when logged in" do
+  sign_in users(:jason)
+  put :update, id: @status, status: { content: @status.content }
+  assert_redirected_to status_path(assigns(:status))
+end
+
   test "should destroy status" do
     assert_difference('Status.count', -1) do
       delete :destroy, id: @status
@@ -54,3 +72,6 @@ class StatusesControllerTest < ActionController::TestCase
     assert_redirected_to statuses_path
   end
 end
+
+
+
