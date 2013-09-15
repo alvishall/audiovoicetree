@@ -4,3 +4,11 @@ jason:
   email: "jasonman@gmail.com"
   profile_name: "jasonman"
 
+new:
+  first_name: "New"
+  last_name: "User"
+  email: "newuser@gmail.com"
+  profile_name: "newuser"
+
+
+
