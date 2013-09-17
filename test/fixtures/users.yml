@@ -9,6 +9,11 @@ new:
   last_name: "User"
   email: "newuser@gmail.com"
   profile_name: "newuser"
-
+  
+mike:
+  first_name: "Mike"
+  last_name: "The Frog"
+  email: "mike@teamtreehous.com"
+  profile_name: "mikethefrog"
 
 
