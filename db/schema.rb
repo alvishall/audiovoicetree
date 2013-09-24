@@ -11,13 +11,26 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130916224908) do
+ActiveRecord::Schema.define(:version => 20130924032600) do
+
+  create_table "documents", :force => true do |t|
+    t.integer  "user_id"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size"
+    t.datetime "attachment_updated_at"
+  end
+
+  add_index "documents", ["user_id"], :name => "index_documents_on_user_id"
 
   create_table "statuses", :force => true do |t|
     t.text     "content"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.integer  "user_id"
+    t.integer  "document_id"
   end
 
   add_index "statuses", ["user_id"], :name => "index_statuses_on_user_id"
@@ -27,8 +40,10 @@ ActiveRecord::Schema.define(:version => 20130916224908) do
     t.integer  "friend_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "state"
   end
 
+  add_index "user_friendships", ["state"], :name => "index_user_friendships_on_state"
   add_index "user_friendships", ["user_id", "friend_id"], :name => "index_user_friendships_on_user_id_and_friend_id"
 
   create_table "users", :force => true do |t|

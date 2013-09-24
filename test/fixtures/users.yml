@@ -3,17 +3,24 @@ jason:
   last_name: "Man"
   email: "jasonman@gmail.com"
   profile_name: "jasonman"
+  encrypted_password: $2a$10$Fh/Hm8RxDsuPTeBUr6864.GARlcmt7zF2WspaXGr3BIv2C27N.osq
 
 new:
   first_name: "New"
   last_name: "User"
   email: "newuser@gmail.com"
   profile_name: "newuser"
-  
+
 mike:
   first_name: "Mike"
   last_name: "The Frog"
   email: "mike@teamtreehous.com"
   profile_name: "mikethefrog"
+
+blocked_friend:
+  first_name: 'Blocked'
+  last_name: 'Friend'
+  email: 'blocked@teamtreehouse.com'
+  profile_name: 'youblockedme'
 
 
