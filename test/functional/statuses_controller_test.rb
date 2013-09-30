@@ -28,7 +28,6 @@ class StatusesControllerTest < ActionController::TestCase
     assert_no_match /Blocked\ status/, response.body
   end
 
-
   test "should be redirected when not logged in" do
     get :new
     assert_response :redirect
@@ -48,25 +47,31 @@ class StatusesControllerTest < ActionController::TestCase
   end
 
   test "should create status when logged in" do
-    sign_in users(:new)
+    sign_in users(:jason)
 
     assert_difference('Status.count') do
       post :create, status: { content: @status.content }
   end
 
     assert_redirected_to status_path(assigns(:status))
+  end
 
+  test "should create an activity item for the status when logged in" do
+    sign_in users(:jason)
+    assert_difference('Activity.count') do
+      post :create, status: { content: @status.content }
+   end
   end
 
   test "should create status for the current user when logged in" do
-    sign_in users(:new)
+    sign_in users(:jason)
 
     assert_difference('Status.count') do
-      post :create, status: { content: @status.content, user_id: users(:jason).id  }
+      post :create, status: { content: @status.content }
   end
 
     assert_redirected_to status_path(assigns(:status))
-    assert_equal assigns(:status).user_id, users(:new).id
+    assert_equal assigns(:status).user_id, users(:jason).id
 
   end
 
@@ -80,7 +85,6 @@ class StatusesControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_redirected_to new_user_session_path
   end
-
 
 test "should get edit when logged in" do
   sign_in users(:jason)
@@ -100,10 +104,17 @@ test "should update status when logged in" do
   assert_redirected_to status_path(assigns(:status))
 end
 
+test "should create an activity item when the status is updated" do
+  sign_in users(:jason)
+  assert_difference 'Activity.count' do
+  put :update, id: @status, status: { content: @status.content }
+ end
+end
+
 test "should update status for the current user when logged in" do
   sign_in users(:jason)
   put :update, id: @status, status: { content: @status.content, user_id: users(:jason).id }
-  assert_redirected_to status_path(assigns(:status))
+  assert_response :error
   assert_equal assigns(:status).user_id, users(:jason).id
 end
 

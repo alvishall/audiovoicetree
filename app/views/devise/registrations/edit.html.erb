@@ -15,14 +15,9 @@
 <fieldset>
     <legend>Profile Picture</legend>
     <%= f.input :avatar, as: :file %>
-    <% if f.object.avatar? %>
-    <div class="control-group">
-      <label class="control-label">Current avatar</label>
-      <div class="controls">  
-    <%= image_tag f.object.avatar.url %>
-  </div>
-</div>
-    <% end %>
+
+    <%= bootstrap_paperclip_picture f, :avatar %>
+    
   </fieldset>
 
   <fieldset>

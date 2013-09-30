@@ -3,16 +3,18 @@
     <%= avatar_profile_link @user, {}, class: '' %>
     <%= @user.full_name %>
   </h1>
-<% end %>>
+<% end %>
+
+<%= link_to "Albums", albums_path(@user), class: 'btn' %>
 
 <% if signed_in? %>
-<div id="family-status">
+<span id="family-status">
 	<% if current_user.friends.include?(@user) || current_user.pending_friends.include?(@user) %>
 	<%= link_to "Edit Friendship", edit_user_friendship_path(friend_id: @user), class: 'btn' %>
 	<% else %>
 	<%= link_to "Add Family", new_user_friendship_path(friend_id: @user), class: 'btn', id: 'add-family', data: { friend_id: @user.to_param } %>
 	<% end %>
-</div>
+</span>
 <% end %>
 
 

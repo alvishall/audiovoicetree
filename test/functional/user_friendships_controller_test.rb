@@ -9,12 +9,12 @@ context "#index" do
       end
      end
 
-     context "when logged in" do
+    context "when logged in" do
       setup do
-        @friendship1 = create(:pending_user_friendship, user: users(:jason), friend: create(:user, first_name: 'Pending', last_name: 'Friend'))
-        @friendship2 = create(:accepted_user_friendship, user: users(:jason), friend: create(:user, first_name: 'Active', last_name: 'Friend'))
-        @friendship3 = create(:requested_user_friendship, user: users(:jason), friend: create(:user, first_name: 'Requested', last_name: 'Friend'))
-        @friendship4 = user_friendships(:blocked_by_jason)
+        @pending_friendship   = create(:pending_user_friendship, user: users(:jason), friend: create(:user, first_name: 'Pending', last_name: 'Friend'))
+        @accepted_friendship  = create(:accepted_user_friendship, user: users(:jason), friend: create(:user, first_name: 'Active', last_name: 'Friend'))
+        @requested_friendship = create(:requested_user_friendship, user: users(:jason), friend: create(:user, first_name: 'Requested', last_name: 'Friend'))
+        @blocked_friendship   = user_friendships(:blocked_by_jason)
 
         sign_in users(:jason)
         get :index
@@ -34,13 +34,14 @@ context "#index" do
       end
 
       should "display pending information on a pending friendship" do
-        assert_select "#user_friendship_#{@friendship1.id}" do
-          assert_select "em", "Friendship is pending."
+        assert_select "#user_friendship_#{@pending_friendship.id}" do
+          assert_select "em", "Friendship is pending"
         end
       end
+      
       should "display date information on an accepted friendship" do
-              assert_select "#user_friendship_#{@friendship2.id}" do
-                assert_select "em", "Friendship started #{@friendship2.updated_at}."
+        assert_select "#user_friendship_#{@accepted_friendship.id}" do
+          assert_select "em", "Friendship is accepted"
         end
       end
 
@@ -72,9 +73,9 @@ context "#index" do
           assert_response :success
         end
 
-        should "not display pending or active friend's names" do
-          assert_no_match /Blocked/, response.body
-          assert_no_match /Active/, response.body
+        should "display pending friend's names" do
+          assert_select "div#friend-list", {count: 1, html: /#{@pending_friendship.friend.full_name}/ }
+          assert_select "div#friend-list", {count: 0, html: /#{@blocked_friendship.friend.full_name}/ }
         end
 
         should "display blocked friends" do
@@ -92,8 +93,10 @@ context "#index" do
         end
 
         should "not display pending or active friend's names" do
-          assert_no_match /Blocked/, response.body
-          assert_no_match /Active/, response.body
+          assert_select "div#friend-list", {count: 1, html: /#{@requested_friendship.friend.full_name}/ }
+          assert_select "div#friend-list", {count: 0, html: /#{@blocked_friendship.friend.full_name}/ }
+          assert_select "div#friend-list", {count: 0, html: /#{@pending_friendship.friend.full_name}/ }
+          assert_select "div#friend-list", {count: 0, html: /#{@accepted_friendship.friend.full_name}/ }
         end
 
         should "display requested friends" do
@@ -110,9 +113,9 @@ context "#index" do
           assert_response :success
         end
 
-        should "not display pending or active friend's names" do
-          assert_no_match /Blocked/, response.body
-          assert_no_match /Requested/, response.body
+        should "display active friend's names" do
+          assert_select "div#friend-list", {count: 1, html: /#{@accepted_friendship.friend.full_name}/ }
+          assert_select "div#friend-list", {count: 0, html: /#{@blocked_friendship.friend.full_name}/ }
         end
 
         should "display requested friends" do
@@ -262,22 +265,33 @@ context "#index" do
           @user_friendship = create(:pending_user_friendship, user: users(:jason), friend: @friend)
           create(:pending_user_friendship, friend: users(:jason), user: @friend)
           sign_in users(:jason)
+        end
+
+        def do_put
           put :accept, id: @user_friendship
           @user_friendship.reload
         end
 
         should "assign a user_friendship" do
+          do_put
           assert assigns(:user_friendship)
           assert_equal @user_friendship, assigns(:user_friendship)
-
         end
 
         should "update the state to accepted" do
+          do_put
           assert_equal 'accepted', @user_friendship.state
         end
 
         should "have a flash success message" do
+          do_put
           assert_equal "You are now family with #{@user_friendship.friend.first_name}", flash[:success]
+        end
+
+        should "create activity" do
+          assert_difference "Activity.count" do
+            do_put
+          end
         end
       end
     end

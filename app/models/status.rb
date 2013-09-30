@@ -1,5 +1,5 @@
 class Status < ActiveRecord::Base
-  attr_accessible :content, :user_id, :document_attributes
+  attr_accessible :content, :document_attributes
   belongs_to :user
   belongs_to :document
 
@@ -8,5 +8,5 @@ class Status < ActiveRecord::Base
   validates :content, presence: true,
                       length: { minimum: 2 }
 
- validates :user_id, presence: true                                    
+  validates :user_id, presence: true
 end

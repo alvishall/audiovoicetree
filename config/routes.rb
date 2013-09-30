@@ -1,7 +1,5 @@
 Voicetree2::Application.routes.draw do
-  get "profiles/show"
-
- 
+    resources :activities, only: [:index]
 
   as :user do
     get '/register', to: 'devise/registrations#new', as: :register
@@ -28,7 +26,15 @@ Voicetree2::Application.routes.draw do
   get 'feed', to: 'statuses#index', as: :feed
   root to: 'statuses#index'
 
+  scope ":profile_name" do
+  resources :albums do
+    resources :pictures
+  end
+end
+
   get '/:id', to: 'profiles#show', as: 'profile'
+
+end
 
 
   # The priority is based upon order of creation:
@@ -87,4 +93,3 @@ Voicetree2::Application.routes.draw do
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id))(.:format)'
-end

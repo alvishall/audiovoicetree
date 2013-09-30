@@ -10,12 +10,20 @@
 	<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 	<div class="container">
+		<% if user_signed_in? %>
+		<%= link_to "VoiceTree", activities_path, class: 'brand' %>
+		<% else %>
 		<%= link_to "VoiceTree", root_path, class: 'brand' %>
+		<% end %>
 		<ul class="nav">
 			<li><%= link_to "All Statuses", feed_path %></li>
+			<% if user_signed_in? %>
+			  <li><%= link_to "Activity Feed", activities_path %></li>
+			<% end %>
 		</ul>
 		<ul class="nav pull-right">
 			<% if user_signed_in? %>
+			<li><%= link_to 'Albums', albums_path(current_user) %></li>
 			<li><%= link_to 'Friends', user_friendships_path %></li>
 				<li><%= link_to current_user.full_name, edit_user_registration_path %></li>
 				<li><%= link_to "Log Out", logout_path %></li>
@@ -29,6 +37,7 @@
 	 </div>
 	</div>
 	<div class="container">
+		<%= render_breadcrumbs %>
 		<% flash.each do |type, message| %>
 		<div class="alert <%= flash_class type %>">
 		    	<button class="close" data-dismiss="alert">x</button>

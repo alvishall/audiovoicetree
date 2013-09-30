@@ -10,6 +10,7 @@ class UserFriendshipsController < ApplicationController
 	def accept
 		@user_friendship = current_user.user_friendships.find(params[:id])
 		if @user_friendship.accept!
+			current_user.create_activity @user_friendship, 'accepted'
 			flash[:success] = "You are now family with #{@user_friendship.friend.first_name}"
 		else
 			flash[:error] = "That friendship could not be accepted."
@@ -55,7 +56,6 @@ class UserFriendshipsController < ApplicationController
 					flash[:success] = "Family request sent."
 					redirect_to profile_path(@friend)
 				end
-
 				format.json { render json: @user_friendship.to_json }
 		    end
 		 end

@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+vacation:
+  user: jason
+  title: Vacation Pictures
+
+#two:
+  #user: 
+  #title: MyString
